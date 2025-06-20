@@ -1,1 +1,520 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
 
+MDScreenManager:
+    LoginScreen:
+        name: 'login_screen'
+    RegisterScreen:
+        name: 'register_screen'
+    LibrarianScreen:
+        name: 'librarian_screen'
+    MainScreen:
+        name: 'main_screen'
+    LibrarianDashboardScreen:
+        name: 'librarian_dashboard_screen'
+
+    # Librarian-only Screens
+    ViewBooksScreen:
+        name: 'view_books_screen'
+    RegisterBooksScreen:
+        name: 'register_books_screen'
+    BorrowRequestScreen:
+        name: 'borrow_request_screen'
+    ReturnRequestScreen:
+        name: 'return_request_screen'
+    ViewBorrowedLibrarianScreen:
+        name: 'view_borrowed_librarian_screen'
+
+    # Student-only Screens (accessible from categories)
+    InformationTechnologyScreen:
+        name: 'information_technology_screen'
+    HospitalityManagementScreen:
+        name: 'hospitality_management_screen'
+    ComputerEngineeringScreen:
+        name: 'computer_engineering_screen'
+    OfficeAdministrationScreen:
+        name: 'office_administration_screen'
+    PhysicalEducationScreen:
+        name: 'physical_education_screen'
+    ViewBorrowedScreen:
+        name: 'view_borrowed_screen'
+
+
+<LoginScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: "48dp"
+        spacing: "24dp"
+        adaptive_height: True
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        MDLabel:
+            text: "Student Login"
+            font_style: "DisplaySmall"
+            halign: 'center'
+            adaptive_height: True
+
+        MDTextField:
+            id: name
+            hint_text: "Full Name"
+            mode: "outlined"
+            icon_left: "account"
+
+        MDTextField:
+            id: student_number
+            hint_text: "Student Number"
+            mode: "outlined"
+            icon_left: "pound"
+
+        MDButton:
+            style: "filled"
+            text: "LOGIN"
+            on_release: app.login_student(name.text, student_number.text)
+            pos_hint: {'center_x': 0.5}
+
+        MDButton:
+            style: "text"
+            text: "Don't have an account? Register"
+            on_release: root.manager.current = 'register_screen'
+            pos_hint: {'center_x': 0.5}
+            
+        MDButton:
+            style: "outlined"
+            text: "Librarian Login"
+            on_release: root.manager.current = 'librarian_screen'
+            pos_hint: {'center_x': 0.5}
+
+
+<RegisterScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: "48dp"
+        spacing: "24dp"
+        adaptive_height: True
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        MDLabel:
+            text: "Create Account"
+            font_style: "DisplaySmall"
+            halign: 'center'
+            adaptive_height: True
+
+        MDTextField:
+            id: register_name
+            hint_text: "Full Name"
+            mode: "outlined"
+            icon_left: "account"
+
+        MDTextField:
+            id: register_email
+            hint_text: "Email Address"
+            mode: "outlined"
+            icon_left: "email"
+
+        MDTextField:
+            id: register_student_number
+            hint_text: "Student Number"
+            mode: "outlined"
+            icon_left: "pound"
+
+        MDButton:
+            style: "filled"
+            text: "REGISTER"
+            on_release: app.register_student(register_name.text, register_email.text, register_student_number.text)
+            pos_hint: {'center_x': 0.5}
+
+        MDButton:
+            style: "text"
+            text: "Already have an account? Login"
+            on_release: root.manager.current = 'login_screen'
+            pos_hint: {'center_x': 0.5}
+
+
+<LibrarianScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: "48dp"
+        spacing: "24dp"
+        adaptive_height: True
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        MDLabel:
+            text: "Librarian Login"
+            font_style: "DisplaySmall"
+            halign: 'center'
+            adaptive_height: True
+
+        MDTextField:
+            id: librarian_name
+            text: "admin"
+            hint_text: "Librarian Name"
+            mode: "outlined"
+            icon_left: "account-tie"
+
+        MDTextField:
+            id: librarian_password
+            text: "admin"
+            hint_text: "Password"
+            mode: "outlined"
+            icon_left: "key"
+            password: True
+
+        MDButton:
+            style: "filled"
+            text: "LOGIN"
+            on_release: app.login_librarian(librarian_name.text, librarian_password.text)
+            pos_hint: {'center_x': 0.5}
+            
+        MDButton:
+            style: "text"
+            text: "Back to Student Login"
+            on_release: root.manager.current = 'login_screen'
+            pos_hint: {'center_x': 0.5}
+
+
+<MainScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDScreenManager:
+            id: screen_manager
+
+            HomeScreen:
+                name: 'home_screen'
+            FavoritesScreen:
+                name: 'favorites_screen'
+            SearchScreen:
+                name: 'search_screen'
+            CategoriesScreen:
+                name: 'categories_screen'
+
+        MDNavigationBar:
+            id: navigation_bar
+            on_switch_tabs: app.on_switch_tabs(*args)
+
+            MDNavigationItem:
+                name: 'home_screen'
+                text: 'Home'
+                icon: 'home'
+                
+            MDNavigationItem:
+                name: 'favorites_screen'
+                text: 'Favorites'
+                icon: 'heart'
+
+            MDNavigationItem:
+                name: 'search_screen'
+                text: 'Search'
+                icon: 'magnify'
+
+            MDNavigationItem:
+                name: 'categories_screen'
+                text: 'Categories'
+                icon: 'bookshelf'
+
+
+<HomeScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Library Home"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [["menu", lambda x: print("Menu")]] # Placeholder
+            right_action_items: [["account-circle-outline", lambda x: root.manager.manager.current_screen.ids.screen_manager.current != 'home_screen' and app.switch_screen('view_borrowed_screen')]]
+        
+        MDScrollView:
+            MDList:
+                id: home_recommendations_list
+                padding: 0
+
+
+<FavoritesScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "My Favorites"
+            specific_text_color: 1, 1, 1, 1
+
+        MDScrollView:
+            MDList:
+                id: favorites_container
+
+
+<SearchScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: "10dp"
+        
+        MDTopAppBar:
+            title: "Search Books"
+            specific_text_color: 1, 1, 1, 1
+            
+        MDTextField:
+            id: search_field
+            hint_text: "Search by title or author"
+            mode: "outlined"
+            size_hint_x: 0.9
+            pos_hint: {'center_x': 0.5}
+            on_text_validate: app.search_books(self.text)
+            
+        MDScrollView:
+            MDList:
+                id: search_results_list
+
+
+<CategoriesScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Book Categories"
+            specific_text_color: 1, 1, 1, 1
+
+        MDScrollView:
+            MDList:
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "Information Technology"
+                    MDListItemSupportingText:
+                        text: "Books about programming, networking, and AI."
+                    on_release: root.manager.manager.current = 'information_technology_screen'
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "Hospitality Management"
+                    MDListItemSupportingText:
+                        text: "Explore tourism, food service, and more."
+                    on_release: root.manager.manager.current = 'hospitality_management_screen'
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "Computer Engineering"
+                    MDListItemSupportingText:
+                        text: "Hardware, architecture, and digital design."
+                    on_release: root.manager.manager.current = 'computer_engineering_screen'
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "Office Administration"
+                    MDListItemSupportingText:
+                        text: "Management and administrative skills."
+                    on_release: root.manager.manager.current = 'office_administration_screen'
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "Physical Education"
+                    MDListItemSupportingText:
+                        text: "Sports science, yoga, and wellness."
+                    on_release: root.manager.manager.current = 'physical_education_screen'
+                MDListItem:
+                    MDListItemHeadlineText:
+                        text: "My Borrowed Books"
+                    MDListItemSupportingText:
+                        text: "View your currently borrowed books and history."
+                    on_release: root.manager.manager.current = 'view_borrowed_screen'
+                    
+
+<BaseCategoryScreen@MDScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: root.name.replace('_', ' ').title()
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: books_list
+
+
+<InformationTechnologyScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Information Technology"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: it_books_list
+
+# Define other category screens similarly...
+<HospitalityManagementScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Hospitality Management"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: hm_books_list
+
+<ComputerEngineeringScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Computer Engineering"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: cpe_books_list
+
+<OfficeAdministrationScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Office Administration"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: oa_books_list
+
+<PhysicalEducationScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Physical Education"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: pe_books_list
+
+
+<ViewBorrowedScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "My Borrowed Books"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'main_screen')]]
+        MDScrollView:
+            MDList:
+                id: student_borrowed_books_list
+
+
+<LibrarianDashboardScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Librarian Dashboard"
+            specific_text_color: 1, 1, 1, 1
+            right_action_items: [['logout', lambda x: app.logout()]]
+            
+        MDScrollView:
+            MDList:
+                MDListItem:
+                    MDListItemLeadingIcon:
+                        icon: "book-plus"
+                    MDListItemHeadlineText:
+                        text: "Register New Book"
+                    on_release: root.manager.current = 'register_books_screen'
+
+                MDListItem:
+                    MDListItemLeadingIcon:
+                        icon: "book-search"
+                    MDListItemHeadlineText:
+                        text: "View All Books"
+                    on_release: root.manager.current = 'view_books_screen'
+
+                MDListItem:
+                    MDListItemLeadingIcon:
+                        icon: "book-arrow-right-outline"
+                    MDListItemHeadlineText:
+                        text: "Borrow Requests"
+                    on_release: root.manager.current = 'borrow_request_screen'
+
+                MDListItem:
+                    MDListItemLeadingIcon:
+                        icon: "book-arrow-left-outline"
+                    MDListItemHeadlineText:
+                        text: "Return Requests"
+                    on_release: root.manager.current = 'return_request_screen'
+                
+                MDListItem:
+                    MDListItemLeadingIcon:
+                        icon: "book-account-outline"
+                    MDListItemHeadlineText:
+                        text: "View All Borrowed Books"
+                    on_release: root.manager.current = 'view_borrowed_librarian_screen'
+
+
+<RegisterBooksScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Register a Book"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'librarian_dashboard_screen')]]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: "24dp"
+            spacing: "16dp"
+
+            MDTextField:
+                id: register_book_title
+                hint_text: "Book Title"
+                mode: "outlined"
+            MDTextField:
+                id: register_book_author
+                hint_text: "Author"
+                mode: "outlined"
+            MDTextField:
+                id: register_book_category
+                hint_text: "Category"
+                mode: "outlined"
+            MDTextField:
+                id: register_book_availability
+                text: "Available"
+                hint_text: "Availability (e.g., Available)"
+                mode: "outlined"
+            MDButton:
+                style: "filled"
+                text: "REGISTER BOOK"
+                on_release: app.register_book(register_book_title.text, register_book_author.text, register_book_category.text, register_book_availability.text)
+                pos_hint: {'center_x': 0.5}
+
+
+<ViewBooksScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "All Library Books"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'librarian_dashboard_screen')]]
+        MDScrollView:
+            MDList:
+                id: all_books_list
+
+<BorrowRequestScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Pending Borrow Requests"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'librarian_dashboard_screen')]]
+        MDScrollView:
+            MDList:
+                id: borrow_requests_container
+
+<ReturnRequestScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "Pending Return Requests"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'librarian_dashboard_screen')]]
+        MDScrollView:
+            MDList:
+                id: return_requests_container
+
+<ViewBorrowedLibrarianScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            title: "All Borrowed Books"
+            specific_text_color: 1, 1, 1, 1
+            left_action_items: [['arrow-left', lambda x: setattr(root.manager, 'current', 'librarian_dashboard_screen')]]
+        MDScrollView:
+            MDList:
+                id: borrowed_books_list
